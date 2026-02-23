@@ -1,10 +1,14 @@
-class SnakeNeonRGB {
+class SnakeNeonPro {
     constructor() {
         this.canvas = document.getElementById('gameCanvas');
         this.ctx = this.canvas.getContext('2d');
-        this.cfg = { hue: 180, rainbow: false, emoji: "🍎", cols: 15, rows: 17, speed: 90, mobile: "dpad" };
+        this.cfg = { hue: 180, rainbow: false, emoji: "🍎", cols: 15, rows: 17, speed: 90, mobile: "swipe" };
         this.state = { active: false, paused: false, over: false, audioOK: false };
         this.inputQueue = [];
+        
+        // Sistema de Touch
+        this.touch = { startX: 0, startY: 0, threshold: 30 };
+
         this.audio = {
             enabled: true,
             assets: {
@@ -13,24 +17,23 @@ class SnakeNeonRGB {
             }
         };
         this.audio.assets.menu.loop = this.audio.assets.game.loop = true;
-        this.history = { best: localStorage.getItem('snk_rgb_best') || 0, last: localStorage.getItem('snk_rgb_last') || 0 };
+        this.stats = { best: localStorage.getItem('snk_best') || 0, last: localStorage.getItem('snk_last') || 0 };
         this.init();
     }
 
     init() {
-        // Unlock Audio
         const unlock = () => { if(!this.state.audioOK){ this.state.audioOK = true; this.manageAudio(); } };
-        window.addEventListener('click', unlock); window.addEventListener('keydown', unlock);
+        window.addEventListener('mousedown', unlock);
+        window.addEventListener('touchstart', unlock, { passive: false });
 
-        // Rainbow Toggle
-        const rainBtn = document.getElementById('rainbow-btn');
-        rainBtn.onclick = () => {
+        document.getElementById('rainbow-btn').onclick = (e) => {
             this.cfg.rainbow = !this.cfg.rainbow;
-            rainBtn.classList.toggle('active', this.cfg.rainbow);
+            e.target.classList.toggle('active', this.cfg.rainbow);
             this.playSfx('click');
         };
 
         document.getElementById('hue-slider').oninput = (e) => { this.cfg.hue = e.target.value; this.playSfx('click'); };
+        
         document.querySelectorAll('.p-btn').forEach(b => b.onclick = () => {
             document.querySelectorAll('.p-btn').forEach(x => x.classList.remove('active'));
             b.classList.add('active'); this.cfg.emoji = b.dataset.emoji; this.playSfx('click');
@@ -46,7 +49,7 @@ class SnakeNeonRGB {
         document.getElementById('retry-btn').onclick = () => this.boot();
         document.getElementById('home-btn').onclick = () => this.showMenu();
 
-        this.bindKeys();
+        this.bindControls();
         this.updateHUD();
     }
 
@@ -58,7 +61,8 @@ class SnakeNeonRGB {
         (this.state.active && !this.state.paused) ? this.audio.assets.game.play() : this.audio.assets.menu.play();
     }
 
-    bindKeys() {
+    bindControls() {
+        // Atalhos Teclado
         window.onkeydown = (e) => {
             const k = e.key.toUpperCase();
             if(k === 'R') this.boot();
@@ -66,7 +70,39 @@ class SnakeNeonRGB {
             const dirs = { 'W':'UP','S':'DOWN','A':'LEFT','D':'RIGHT','ARROWUP':'UP','ARROWDOWN':'DOWN','ARROWLEFT':'LEFT','ARROWRIGHT':'RIGHT' };
             if(dirs[k]) this.pushInput(dirs[k]);
         };
+
+        // DPAD
         ['up','down','left','right'].forEach(id => document.getElementById(id).onclick = () => this.pushInput(id.toUpperCase()));
+
+        // CORREÇÃO SWIPE MOBILE
+        this.canvas.addEventListener('touchstart', (e) => {
+            // e.preventDefault(); // Comentado para permitir clique em menus se necessário, mas touch-action: none resolve no canvas
+            this.touch.startX = e.touches[0].clientX;
+            this.touch.startY = e.touches[0].clientY;
+        }, { passive: false });
+
+        this.canvas.addEventListener('touchmove', (e) => {
+            e.preventDefault(); // Crucial para não rolar a página
+        }, { passive: false });
+
+        this.canvas.addEventListener('touchend', (e) => {
+            if (this.cfg.mobile !== 'swipe' || !this.state.active || this.state.paused) return;
+            
+            const diffX = e.changedTouches[0].clientX - this.touch.startX;
+            const diffY = e.changedTouches[0].clientY - this.touch.startY;
+
+            if (Math.abs(diffX) > Math.abs(diffY)) {
+                // Movimento Horizontal
+                if (Math.abs(diffX) > this.touch.threshold) {
+                    this.pushInput(diffX > 0 ? 'RIGHT' : 'LEFT');
+                }
+            } else {
+                // Movimento Vertical
+                if (Math.abs(diffY) > this.touch.threshold) {
+                    this.pushInput(diffY > 0 ? 'DOWN' : 'UP');
+                }
+            }
+        }, { passive: false });
     }
 
     pushInput(dir) {
@@ -87,6 +123,7 @@ class SnakeNeonRGB {
         document.querySelectorAll('.ui-panel').forEach(p => p.classList.add('hidden'));
         document.getElementById('overlay').classList.remove('hidden');
         document.getElementById('menu-screen').classList.remove('hidden');
+        document.getElementById('dpad').classList.add('hidden');
         this.manageAudio();
     }
 
@@ -96,7 +133,8 @@ class SnakeNeonRGB {
         this.cfg.cols = c; this.cfg.rows = r;
         this.cfg.speed = Number(document.getElementById('speed').value);
         this.cfg.mobile = document.getElementById('ctrl-mode').value;
-        document.getElementById('dpad').className = this.cfg.mobile === 'dpad' ? 'mobile-ui' : 'mobile-ui hidden';
+        
+        document.getElementById('dpad').classList.toggle('hidden', this.cfg.mobile !== 'dpad');
         
         const area = document.getElementById('viewport');
         this.ts = Math.floor(Math.min((area.clientWidth-20)/c, (area.clientHeight-20)/r));
@@ -104,7 +142,8 @@ class SnakeNeonRGB {
 
         this.snake = [{x: Math.floor(c/2), y: Math.floor(r/2)}, {x: Math.floor(c/2)-1, y: Math.floor(r/2)}];
         this.dir = {x: 1, y: 0}; this.curDir = 'RIGHT'; this.inputQueue = [];
-        this.score = 0; this.startTime = Date.now(); this.state.active = true; this.state.paused = false; this.state.over = false;
+        this.score = 0; this.startTime = Date.now(); 
+        this.state.active = true; this.state.paused = false; this.state.over = false;
 
         this.spawn();
         document.getElementById('overlay').classList.add('hidden');
@@ -138,19 +177,24 @@ class SnakeNeonRGB {
         if(head.x===this.food.x && head.y===this.food.y) { this.score+=10; this.playSfx('eat'); this.spawn(); this.updateHUD(); }
         else this.snake.pop();
 
-        if(this.cfg.rainbow) this.cfg.hue = (parseInt(this.cfg.hue) + 5) % 360;
+        if(this.cfg.rainbow) this.cfg.hue = (parseInt(this.cfg.hue) + 4) % 360;
         this.draw();
     }
 
     draw() {
         this.ctx.fillStyle = "#000"; this.ctx.fillRect(0,0,this.canvas.width,this.canvas.height);
-        this.ctx.strokeStyle = "rgba(255,255,255,0.15)";
+        
+        // GRID BRANCO
+        this.ctx.strokeStyle = "rgba(255,255,255,0.12)";
+        this.ctx.lineWidth = 1;
         for(let i=0; i<=this.cfg.cols; i++) { this.ctx.beginPath(); this.ctx.moveTo(i*this.ts,0); this.ctx.lineTo(i*this.ts,this.canvas.height); this.ctx.stroke(); }
         for(let j=0; j<=this.cfg.rows; j++) { this.ctx.beginPath(); this.ctx.moveTo(0,j*this.ts); this.ctx.lineTo(this.canvas.width,j*this.ts); this.ctx.stroke(); }
         
-        this.ctx.font = `${this.ts*0.7}px Arial`; this.ctx.textAlign="center"; this.ctx.textBaseline="middle";
+        // FRUTA
+        this.ctx.font = `${this.ts*0.8}px Arial`; this.ctx.textAlign="center"; this.ctx.textBaseline="middle";
         this.ctx.fillText(this.cfg.emoji, this.food.x*this.ts+this.ts/2, this.food.y*this.ts+this.ts/2);
 
+        // SNAKE
         this.ctx.fillStyle = `hsl(${this.cfg.hue}, 100%, 50%)`;
         this.ctx.shadowBlur = 15; this.ctx.shadowColor = this.ctx.fillStyle;
         this.snake.forEach(p => this.ctx.fillRect(p.x*this.ts+1, p.y*this.ts+1, this.ts-2, this.ts-2));
@@ -159,21 +203,22 @@ class SnakeNeonRGB {
 
     updateHUD() {
         document.getElementById('score').innerText = this.score;
-        document.getElementById('best').innerText = this.history.best;
-        document.getElementById('last').innerText = this.history.last;
+        document.getElementById('best').innerText = this.stats.best;
+        document.getElementById('last').innerText = this.stats.last;
     }
 
     end() {
         clearInterval(this.loop); clearInterval(this.clock);
         this.state.over = true; this.state.active = false;
-        this.history.last = this.score; localStorage.setItem('snk_rgb_last', this.score);
-        if(this.score > this.history.best) { this.history.best = this.score; localStorage.setItem('snk_rgb_best', this.score); }
+        this.stats.last = this.score; localStorage.setItem('snk_last', this.score);
+        if(this.score > this.stats.best) { this.stats.best = this.score; localStorage.setItem('snk_best', this.score); }
         document.getElementById('f-score').innerText = this.score;
         document.getElementById('f-time').innerText = document.getElementById('timer').innerText;
         document.getElementById('overlay').classList.remove('hidden');
         document.getElementById('menu-screen').classList.add('hidden');
         document.getElementById('over-screen').classList.remove('hidden');
+        document.getElementById('dpad').classList.add('hidden');
         this.updateHUD(); this.manageAudio();
     }
 }
-window.onload = () => new SnakeNeonRGB();
+window.onload = () => new SnakeNeonPro();
