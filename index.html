@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Snake Neon - RGB Rainbow Edition</title>
+    <title>Snake Neon - Mobile Pro</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -52,8 +52,8 @@
                         <div class="field">
                             <label>CONTROLE</label>
                             <select id="ctrl-mode">
+                                <option value="swipe">Touch Swipe</option>
                                 <option value="dpad">D-Pad</option>
-                                <option value="swipe">Swipe</option>
                             </select>
                         </div>
 
@@ -80,7 +80,7 @@
                 </div>
 
                 <div id="over-screen" class="ui-panel hidden">
-                    <h2 class="death-text">GAME OVER</h2>
+                    <h2 class="death-text">FIM DE JOGO</h2>
                     <div class="final-stats">
                         <p>Score: <span id="f-score">0</span></p>
                         <p>Tempo: <span id="f-time">00:00</span></p>
@@ -91,7 +91,7 @@
             </div>
         </main>
 
-        <div id="dpad" class="mobile-ui">
+        <div id="dpad" class="mobile-ui hidden">
             <button id="up">▲</button>
             <div class="dpad-row">
                 <button id="left">◄</button>
