@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Snake Neon - Mobile Pro</title>
+    <title>Snake Neon - RGB Rainbow Edition</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -52,8 +52,8 @@
                         <div class="field">
                             <label>CONTROLE</label>
                             <select id="ctrl-mode">
-                                <option value="swipe">Touch Swipe</option>
                                 <option value="dpad">D-Pad</option>
+                                <option value="swipe">Swipe</option>
                             </select>
                         </div>
 
@@ -76,22 +76,22 @@
                         </div>
                     </div>
 
-                    <button id="start-btn" class="btn-main">JOGAR</button>
+                    <button id="start-btn" class="btn-main">JOGAR (ENTER)</button>
                 </div>
 
                 <div id="over-screen" class="ui-panel hidden">
-                    <h2 class="death-text">FIM DE JOGO</h2>
+                    <h2 class="death-text">GAME OVER</h2>
                     <div class="final-stats">
                         <p>Score: <span id="f-score">0</span></p>
                         <p>Tempo: <span id="f-time">00:00</span></p>
                     </div>
-                    <button id="retry-btn" class="btn-main">REINICIAR</button>
-                    <button id="home-btn" class="btn-sub">MENU</button>
+                    <button id="retry-btn" class="btn-main">REINICIAR (R)</button>
+                    <button id="home-btn" class="btn-sub">MENU (ENTER)</button>
                 </div>
             </div>
         </main>
 
-        <div id="dpad" class="mobile-ui hidden">
+        <div id="dpad" class="mobile-ui">
             <button id="up">▲</button>
             <div class="dpad-row">
                 <button id="left">◄</button>
