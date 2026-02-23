@@ -3,102 +3,81 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Snake Neon - Mobile Pro</title>
+    <title>Snake Neon - Touch Fix Edition</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div id="game-container">
         <header id="hud">
-            <div class="hud-left">
-                <div class="stat">SCORE: <span id="score">0</span></div>
-                <div class="stat">🕒 <span id="timer">00:00</span></div>
-            </div>
-            <div class="hud-center">
-                <div class="stat">👑 <span id="best">0</span></div>
-                <div class="stat">LAST: <span id="last">0</span></div>
-            </div>
-            <div class="hud-right">
-                <button id="mute-btn" class="icon-btn">🔊</button>
-            </div>
+            <div class="hud-item">PTS: <span id="score">0</span></div>
+            <div class="hud-item">🕒 <span id="timer">00:00</span></div>
+            <div class="hud-item">👑 <span id="best">0</span></div>
+            <div class="hud-item">OFF: <span id="last">0</span></div>
+            <button id="mute-btn" class="icon-btn">🔊</button>
         </header>
 
         <main id="viewport">
             <canvas id="gameCanvas"></canvas>
-            <div id="pause-tag" class="overlay-tag hidden">PAUSADO</div>
+            <div id="pause-overlay" class="status-tag hidden">PAUSADO</div>
 
-            <div id="overlay" class="glass-overlay">
-                <div id="menu-screen" class="ui-panel">
-                    <h1 class="neon-title">SNAKE <span>NEON</span></h1>
+            <div id="ui-layer" class="glass-overlay">
+                <div id="menu-screen" class="panel">
+                    <h1 class="neon-logo">SNAKE <span>NEON</span></h1>
                     
-                    <div class="config-grid">
-                        <div class="field full">
-                            <label>COR DA COBRA</label>
-                            <div class="color-row">
+                    <div class="settings">
+                        <div class="control-group full">
+                            <label>COR DO NEON</label>
+                            <div class="row">
                                 <input type="range" id="hue-slider" min="0" max="360" value="180">
-                                <button id="rainbow-btn" class="rainbow-toggle">🌈 RGB</button>
+                                <button id="rgb-btn" class="special-btn">🌈 RGB</button>
                             </div>
                         </div>
 
-                        <div class="field">
+                        <div class="control-group">
                             <label>FRUTA</label>
-                            <div class="picker" id="fruit-picker">
-                                <button class="p-btn active" data-emoji="🍎">🍎</button>
-                                <button class="p-btn" data-emoji="🍇">🍇</button>
-                                <button class="p-btn" data-emoji="🍓">🍓</button>
-                                <button class="p-btn" data-emoji="⚪">⚪</button>
+                            <div class="emoji-grid" id="fruit-picker">
+                                <button class="e-btn active" data-emoji="🍎">🍎</button>
+                                <button class="e-btn" data-emoji="🍇">🍇</button>
+                                <button class="e-btn" data-emoji="🍓">🍓</button>
+                                <button class="e-btn" data-emoji="⚪">⚪</button>
                             </div>
                         </div>
 
-                        <div class="field">
-                            <label>CONTROLE</label>
-                            <select id="ctrl-mode">
-                                <option value="swipe">Touch Swipe</option>
-                                <option value="dpad">D-Pad</option>
-                            </select>
-                        </div>
-
-                        <div class="field">
+                        <div class="control-group">
                             <label>MAPA</label>
                             <select id="map-size">
-                                <option value="9,10">Fácil</option>
+                                <option value="9,10">Fácil </option>
                                 <option value="15,17" selected>Médio</option>
-                                <option value="37,27">Difícil</option>
-                            </select>
-                        </div>
-
-                        <div class="field">
-                            <label>VELOCIDADE</label>
-                            <select id="speed">
-                                <option value="150">Lenta</option>
-                                <option value="90" selected>Normal</option>
-                                <option value="55">Rápida</option>
+                                <option value="37,27">Difícil </option>
                             </select>
                         </div>
                     </div>
 
-                    <button id="start-btn" class="btn-main">JOGAR</button>
+                    <button id="start-btn" class="main-btn">JOGAR</button>
                 </div>
 
-                <div id="over-screen" class="ui-panel hidden">
-                    <h2 class="death-text">FIM DE JOGO</h2>
-                    <div class="final-stats">
+                <div id="over-screen" class="panel hidden">
+                    <h2 class="death-title">FIM DE JOGO</h2>
+                    <div class="results">
                         <p>Score: <span id="f-score">0</span></p>
                         <p>Tempo: <span id="f-time">00:00</span></p>
                     </div>
-                    <button id="retry-btn" class="btn-main">REINICIAR</button>
-                    <button id="home-btn" class="btn-sub">MENU</button>
+                    <button id="retry-btn" class="main-btn">REINICIAR</button>
+                    <button id="home-btn" class="sub-btn">MENU</button>
                 </div>
             </div>
         </main>
 
-        <div id="dpad" class="mobile-ui hidden">
-            <button id="up">▲</button>
-            <div class="dpad-row">
-                <button id="left">◄</button>
-                <button id="right">►</button>
+        <footer id="mobile-controls" class="hidden">
+            <div class="dpad">
+                <button id="up">▲</button>
+                <div class="dpad-row">
+                    <button id="left">◄</button>
+                    <button id="right">►</button>
+                </div>
+                <button id="down">▼</button>
             </div>
-            <button id="down">▼</button>
-        </div>
+        </footer>
     </div>
     <script src="script.js"></script>
 </body>
