@@ -1,0 +1,60 @@
+:root {
+    --neon: #00f3ff;
+    --bg: #010103;
+    --glass: rgba(10, 10, 15, 0.9);
+    --red-border: #ff003c;
+}
+
+.nyan-theme { --neon: #ff00ff; --bg: #0d0012; }
+
+* { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Arial Black', sans-serif; -webkit-tap-highlight-color: transparent; }
+
+body { background: var(--bg); height: 100dvh; display: flex; justify-content: center; align-items: center; overflow: hidden; color: white; transition: background 0.5s; }
+
+#game-container { width: 100%; max-width: 600px; height: 100%; display: flex; flex-direction: column; padding: 10px; }
+
+#hud { display: flex; justify-content: space-between; padding: 15px; background: var(--glass); border-radius: 15px; margin-bottom: 8px; border: 1px solid rgba(255,255,255,0.05); }
+#hud span { color: var(--neon); text-shadow: 0 0 10px var(--neon); }
+
+#viewport { position: relative; flex: 1; display: flex; align-items: center; justify-content: center; }
+#canvas-wrapper { 
+    position: relative; border: 3px solid var(--red-border); 
+    box-shadow: 0 0 20px rgba(255, 0, 60, 0.4); 
+    transform: translateZ(0); /* Aceleração GPU */
+}
+canvas { display: block; image-rendering: auto; }
+
+/* TÍTULO HD SEM BORRÃO */
+#game-title { font-size: 2.5rem; text-align: center; z-index: 10; position: relative; }
+.cyan-glow { color: var(--neon); text-shadow: 0 0 10px var(--neon), 0 0 20px rgba(0,243,255,0.5); }
+.nyan-glow { color: #ff00ff; text-shadow: 0 0 10px #ff00ff, 0 0 20px #ff00ff; }
+
+#nyan-bg-deco {
+    position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+    width: 120%; height: 90px; background: url('assets/nyan.jpg') center;
+    background-size: cover; opacity: 0.4; z-index: 1; border-radius: 45px;
+}
+
+.glass-overlay { 
+    position: absolute; inset: 0; backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); 
+    z-index: 100; display: flex; align-items: center; justify-content: center; pointer-events: all;
+}
+.ui-panel { width: 90%; background: var(--glass); padding: 30px; border-radius: 20px; border: 2px solid var(--neon); text-align: center; }
+
+.config-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 20px 0; text-align: left; }
+.full { grid-column: span 2; }
+label { font-size: 0.6rem; color: #888; margin-bottom: 4px; display: block; }
+select, #color-wheel { width: 100%; padding: 12px; background: #000; border: 1px solid #333; color: #fff; border-radius: 10px; cursor: pointer; }
+
+#color-wheel { appearance: none; height: 15px; background: linear-gradient(to right, red, yellow, lime, cyan, blue, magenta, red); }
+
+.btn-main { width: 100%; padding: 18px; background: #fff; color: #000; border: none; border-radius: 15px; font-weight: 900; cursor: pointer; transition: 0.1s; }
+.btn-main:active { transform: scale(0.98); }
+
+.mobile-controls { display: flex; flex-direction: column; align-items: center; gap: 10px; padding: 15px 0; }
+.d-row { display: flex; gap: 40px; }
+.d-btn { width: 60px; height: 60px; border-radius: 15px; background: var(--glass); border: 2px solid var(--neon); color: #fff; font-size: 1.5rem; pointer-events: all; }
+
+#nyan-alert { position: absolute; bottom: 10px; right: 10px; color: #ff00ff; animation: blink 0.5s infinite; font-size: 0.8rem; }
+@keyframes blink { 50% { opacity: 0; } }
+.hidden { display: none !important; }

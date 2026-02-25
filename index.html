@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Snake Neon vs Nyan Legacy V8</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="neon-theme">
+    <div id="game-container">
+        <header id="hud">
+            <div class="hud-item">👑 <span id="best">0</span></div>
+            <div class="hud-item">🕒 <span id="timer">00:00</span></div>
+            <div class="hud-item">LAST: <span id="last">0</span></div>
+            <button id="mute-btn" class="icon-btn">🔊</button>
+        </header>
+
+        <main id="viewport">
+            <div id="canvas-wrapper">
+                <canvas id="gameCanvas"></canvas>
+                <div id="nyan-alert" class="hidden">MODO NYAN CAT ATIVADO</div>
+                <div id="pause-tag" class="hidden">PAUSADO</div>
+            </div>
+
+            <div id="overlay" class="glass-overlay">
+                <div id="menu-screen" class="ui-panel">
+                    <div class="title-wrapper">
+                        <div id="nyan-bg-deco" class="hidden"></div>
+                        <h1 id="game-title">SNAKE <span class="cyan-glow">NEON</span></h1>
+                    </div>
+                    
+                    <div class="config-grid">
+                        <div class="field full">
+                            <label>COR DA COBRA (NEON)</label>
+                            <input type="range" id="color-wheel" min="0" max="360" value="180">
+                        </div>
+                        <div class="field">
+                            <label>MAPA</label>
+                            <select id="map-size">
+                                <option value="6,6">6x6 (Ultra)</option>
+                                <option value="15,15" selected>15x15 (Médio)</option>
+                                <option value="25,25">25x25 (Grande)</option>
+                                <option value="35,35">35x35 (Gigante)</option>
+                            </select>
+                        </div>
+                        <div class="field">
+                            <label>VELOCIDADE</label>
+                            <select id="speed">
+                                <option value="250">Tartaruga</option>
+                                <option value="150">Lenta</option>
+                                <option value="80" selected>Normal</option>
+                                <option value="45">Rápida</option>
+                            </select>
+                        </div>
+                    </div>
+                    <button id="start-btn" class="btn-main">JOGAR AGORA</button>
+                </div>
+
+                <div id="end-screen" class="ui-panel hidden">
+                    <h2 id="end-title">FIM DE JOGO</h2>
+                    <p class="final-score">SCORE: <span id="f-score">0</span></p>
+                    <button id="retry-btn" class="btn-main">REINICIAR</button>
+                    <button id="home-btn" class="btn-sub">MENU</button>
+                </div>
+            </div>
+        </main>
+
+        <div id="dpad" class="mobile-controls hidden">
+            <button id="btn-UP" class="d-btn">▲</button>
+            <div class="d-row">
+                <button id="btn-LEFT" class="d-btn">◄</button>
+                <button id="btn-RIGHT" class="d-btn">►</button>
+            </div>
+            <button id="btn-DOWN" class="d-btn">▼</button>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
